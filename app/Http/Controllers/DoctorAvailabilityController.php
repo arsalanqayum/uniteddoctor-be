@@ -89,7 +89,16 @@ class DoctorAvailabilityController extends Controller
                 'data' => $schedule
             ]);
     }
-
+    public function available($id)
+    {
+        $schedule= Schedule::where('id',$id)->with(['doctor.education','doctor.expereince','doctor.doctorSpecialities.specialization','available'])->first();
+        return response()
+            ->json([
+                'error' => false,
+                'message' => 'Availibility added.',
+                'data' => $schedule
+            ]);
+    }
     /**
      * Show the form for editing the specified resource.
      */

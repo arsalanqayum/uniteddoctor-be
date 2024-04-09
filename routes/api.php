@@ -41,6 +41,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset']);
     Route::get('doctor-search',[DoctorSearchController::class,'index']);
     Route::resource('specialization', SpecializationController::class); 
     Route::get('/google/oauth', [GoogleOAuthController::class, 'redirect']);
+    Route::get('available/{id}', [DoctorAvailabilityController::class],'available'); 
 Route::get('/google/callback', [GoogleOAuthController::class, 'callback']);
     // Route::get('education', EducationController::class,'index'); 
     // Route::post('/authenticatreview', [ReviewController::class, 'submitReview']);  
