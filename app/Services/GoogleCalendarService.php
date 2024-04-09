@@ -17,7 +17,7 @@ class GoogleCalendarService
         $client = new Google_Client();
         $client->setClientId('869136067755-76ajlrn05plf170fs5e17cu5tp4o3d7s.apps.googleusercontent.com');
         $client->setClientSecret("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");
-        $client->setRedirectUri("http://be.unitedoctors.online/api/v1/google/callback");
+        $client->setRedirectUri(config("app.url")."/api/v1/google/callback");
         $client->setAccessType('offline'); // Gets us our refresh token
         $client->setApprovalPrompt('force');
         $client->setScopes([Google_Service_Calendar::CALENDAR]);
