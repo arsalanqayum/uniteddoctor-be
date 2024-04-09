@@ -23,7 +23,7 @@ class CustomVerifyEmail extends VerifyEmail
      */
     protected function verificationUrl($notifiable)
     {
-        return config('app.frontend_url')."?email=".$notifiable->email;
+        return config('app.frontend_url')."/login?email=".$notifiable->email;
     }
 
     /**
