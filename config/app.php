@@ -17,7 +17,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'frontend_url'=>env('FRONTEND_URL','http://localhost:3000'),
+    'frontend_url'=>env('FRONTEND_URL','http://unitedoctors.online'),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,9 +56,9 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://be.unitedoctors.online'),
 
-    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+    'frontend_url' => env('FRONTEND_URL', 'http://unitedoctors.online'),
     'front_url_doctor' => env('FRONT_URL_DOCTOR', 'https://doctor.axiomeds.com/account/login'),
     'front_url_patient' => env('FRONT_URL_PATIENT', 'https://patient.axiomeds.com/account/login'),
     'front_url_staff' => env('FRONT_URL_STAFF', 'https://staff.axiomeds.com/account/login'),
