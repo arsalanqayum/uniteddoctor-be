@@ -65,6 +65,8 @@ return [
     'front_url_admin' => env('FRONT_URL_ADMIN', 'https://web.axiomeds.com//account/login'),
 
     'asset_url' => env('ASSET_URL'),
+    'google_client_id'=>env("GOOGLE_CLIENT_ID"),
+    'google_secret'=>env('GOOGLE_SECRET'),
 
     /*
     |--------------------------------------------------------------------------
