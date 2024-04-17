@@ -15,7 +15,7 @@ class DoctorAvailabilityController extends Controller
     public function index()
     {
         // dd('yes');
-       $schedule = Schedule::where('user_id',Auth::user()->id)->with('available')->get();
+       $schedule = Schedule::where('user_id',Auth::user()->id)->with('available')->orderBy('created_at','desc')->get();
        return response()
             ->json([
                 'error' => false,

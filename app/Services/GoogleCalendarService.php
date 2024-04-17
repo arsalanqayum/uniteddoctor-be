@@ -15,8 +15,9 @@ class GoogleCalendarService
     protected $client;
     public function __construct() {
         $client = new Google_Client();
-        $client->setClientId('533234582035-5a921fv4207kjmjniq0tsm39pcpl5tjs.apps.googleusercontent.com');
-        $client->setClientSecret("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");
+       
+        $client->setClientId(config("app.google_client_id"));
+        $client->setClientSecret(config("app.google_secret"));
         $client->setRedirectUri(config("app.url")."/api/v1/google/callback");
         $client->setAccessType('offline'); // Gets us our refresh token
         $client->setApprovalPrompt('force');
@@ -86,6 +87,7 @@ class GoogleCalendarService
         }
     }
     public function saveTokens(array $token) {
+        if($token && isset($token['expires_in'])){
         $expiresAt = Carbon::now()->addSeconds($token['expires_in']);
 
         GoogleOAuthToken::updateOrCreate(
@@ -99,6 +101,7 @@ class GoogleCalendarService
 
         // Update the Google_Client with the new tokens
         $this->client->setAccessToken($token);
+    }
     }
 
     public function getClient()
