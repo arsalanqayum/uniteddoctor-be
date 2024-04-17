@@ -15,6 +15,7 @@ class GoogleCalendarService
     protected $client;
     public function __construct() {
         $client = new Google_Client();
+       
         $client->setClientId(config("app.google_client_id"));
         $client->setClientSecret(config("app.google_secret"));
         $client->setRedirectUri(config("app.url")."/api/v1/google/callback");
