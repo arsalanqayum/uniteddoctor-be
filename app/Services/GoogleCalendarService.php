@@ -15,9 +15,9 @@ class GoogleCalendarService
     protected $client;
     public function __construct() {
         $client = new Google_Client();
-//local client id '227227998403-60lvijob8t44t8dp2ukp4jnh7aif06jm.apps.googleusercontent.com'        
+
         $client->setClientId(config("app.google_client_id"));
-        //local secret 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
+       
         $client->setClientSecret(config("app.google_secret"));
         $client->setRedirectUri(config("app.url")."/api/v1/google/callback");
         $client->setAccessType('offline'); // Gets us our refresh token
