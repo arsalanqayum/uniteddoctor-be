@@ -89,9 +89,9 @@ class AuthController extends Controller
     /** User Login return outh2 token with user detail */
     public function login(Request $request)
     {
-        if(User::where('email',$request->email)->where('user_type','doctor')->where('status',0)->first()){
-            return response()->json(['error'=>true,'message'=>'Account is not approved Yet by administration'],400);
-        }
+        // if(User::where('email',$request->email)->where('user_type','doctor')->where('status',0)->first()){
+        //     return response()->json(['error'=>true,'message'=>'Account is not approved Yet by administration'],400);
+        // }
         // return response()->json(['data'=>"ues"]);
         $credentials = $request->only('password');
 
