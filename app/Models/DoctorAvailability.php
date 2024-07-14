@@ -10,15 +10,20 @@ use Illuminate\Database\Eloquent\Model;
 class DoctorAvailability extends Model
 {
     use HasFactory;
-    protected $fillable = ['doctor_id','date','duration','start_time','end_time','is_repeated','type','location','schedule_id'];
-  
+    protected $fillable = [
+        'doctor_id', 'date', 'duration', 'start_time', 'end_time', 'is_repeated', 'type', 'location', 'schedule_id', 'location_id',
+        'location_address',
+        'latitude',
+        'longitude'
+    ];
+
     public function getTimeslotsAttribute()
     {
         $timeslots = [];
         $startTime = Carbon::parse($this->start_time);
         $endTime = Carbon::parse($this->end_time);
         // dd($this->duration);
-        $timeString=$this->duration;
+        $timeString = $this->duration;
         // dd($timeString,$startTime);
         $time = Carbon::createFromFormat('H:i:s', $timeString);
         $totalMinutes = $time->hour * 60 + $time->minute;

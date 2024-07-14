@@ -14,6 +14,7 @@ class DoctorSpecilities extends Seeder
      */
     public function run(): void
     {
+       
         $specialties = [
             'Allergy & Immunology',
             'Anesthesiology',

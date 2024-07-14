@@ -16,6 +16,8 @@ use App\Http\Controllers\GoogleOAuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\GooglePlacesController;
 use App\Http\Controllers\ReviewController;
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +34,15 @@ use App\Http\Controllers\ReviewController;
 //     return $request->user();
 // });
 Route::prefix('v1')->group(function (){
-
+    Route::get('search-places', [GooglePlacesController::class, 'searchPlaces']);
+    Route::prefix('admin')->group(function (){
+        Route::middleware('auth:api')->group(function () {
+        Route::get('appointmentStat',[AppointmentController::class,'appointmentStat']);
+        });
+        Route::post('login', [AuthController::class, 'adminLogin']); 
+        Route::get('/doctors', [DoctorController::class, 'index']);
+        Route::post('/doctors/status/{user}', [DoctorController::class, 'updateStatus']);   
+    });
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::post('password/reset', [ResetPasswordController::class, 'reset']);
     Route::post('/register', [AuthController::class, 'register']);
@@ -58,6 +68,7 @@ Route::get('/google/callback', [GoogleOAuthController::class, 'callback']);
     Route::prefix('appointment')->group(function (){
         Route::post('/',[AppointmentController::class,'store']);
         Route::get('/',[AppointmentController::class,'index']);
+        Route::get('appointmentStat',[AppointmentController::class,'appointmentStat']);
         Route::post('/{id}',[AppointmentController::class,'appointmentStatus']);
         
     });
