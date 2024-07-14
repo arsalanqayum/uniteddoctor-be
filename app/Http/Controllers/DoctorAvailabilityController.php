@@ -15,14 +15,13 @@ class DoctorAvailabilityController extends Controller
     public function index()
     {
         // dd('yes');
-       $schedule = Schedule::where('user_id',Auth::user()->id)->with('available')->orderBy('created_at','desc')->get();
-       return response()
+        $schedule = Schedule::where('user_id', Auth::user()->id)->with('available')->orderBy('created_at', 'desc')->get();
+        return response()
             ->json([
                 'error' => false,
                 'message' => 'Availibility List',
                 'data' => $schedule
             ]);
-
     }
 
     /**
@@ -37,51 +36,70 @@ class DoctorAvailabilityController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // dd('yes');
-        // dd($request->all());
-        // foreach($value as $request->all()){
-        //         dd($value);
-        // }
-        $schedule = Schedule::create([
-            'type' => $request->type,
-            'location' => $request->location,
-            'consultation_fee' => $request->consultation_fee,
-            'user_id' => Auth::user()->id,
-            'offer_label' => $request->offer_label
-        ]);
-        // dd('sss');
-        foreach ($request->schedules as $key => $value) {
-            // Code to be executed for each iteration
-        //    try{}catch()
-            DoctorAvailability::create([
-                'type' => $request->type,
-                'schedule_id' => $schedule['id'],
-                'location' => $request->location,
-                'doctor_id' => Auth::user()->id,
-                'date' => $value['date'],
-                'start_time' => $value['from'],
-                'end_time' => $value['to'],
-                'is_repeated' => $request->is_repeated,
-                'duration' => $value['duration']
-            ]);
-        }
+{
+    // Basic validation for required fields
+   
 
-        $availibility = DoctorAvailability::where('doctor_id', Auth::user()->id)->get();
-        return response()
-            ->json([
-                'error' => false,
-                'message' => 'Availibility added.',
-                'data' => $availibility
-            ]);
+    // Extract the location fields if type is not remote
+    $locationName = $request->type !== 'remote' ? $request->location['name'] ?? null : null;
+    $locationId = $request->type !== 'remote' ? $request->location['id'] ?? null : null;
+    $locationAddress = $request->type !== 'remote' ? $request->location['address'] ?? null : null;
+    $latitude = $request->type !== 'remote' ? $request->location['latitude'] ?? null : null;
+    $longitude = $request->type !== 'remote' ? $request->location['longitude'] ?? null : null;
+
+    if ($request->type !== 'remote' && (!$locationName || !$locationId || !$locationAddress || !$latitude || !$longitude)) {
+        return response()->json([
+            'error' => true,
+            'message' => 'Invalid location data.',
+        ], 400);
     }
+
+    // Create the schedule
+    $schedule = Schedule::create([
+        'type' => $request->type,
+        'location' => $locationName,
+        'consultation_fee' => $request->consultation_fee,
+        'user_id' => Auth::user()->id,
+        'offer_label' => $request->offer_label
+    ]);
+
+    // Create the doctor availability entries
+    foreach ($request->schedules as $value) {
+        DoctorAvailability::create([
+            'type' => $request->type,
+            'schedule_id' => $schedule['id'],
+            'location' => $locationName,
+            'location_id' => $locationId,
+            'location_address' => $locationAddress,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'doctor_id' => Auth::user()->id,
+            'date' => $value['date'],
+            'start_time' => $value['from'],
+            'end_time' => $value['to'],
+            'is_repeated' => $request->is_repeated,
+            'duration' => $value['duration']
+        ]);
+    }
+
+    // Retrieve and return the availability data
+    $availability = DoctorAvailability::where('doctor_id', Auth::user()->id)->get();
+    return response()
+        ->json([
+            'error' => false,
+            'message' => 'Availability added.',
+            'data' => $availability
+        ]);
+}
+
+    
 
     /**
      * Display the specified resource.
      */
     public function show($id)
     {
-        $schedule= Schedule::where('id',$id)->with(['doctor.education','doctor.expereince','doctor.doctorSpecialities.specialization','available'])->first();
+        $schedule = Schedule::where('id', $id)->with(['doctor.education', 'doctor.expereince', 'doctor.doctorSpecialities.specialization', 'available'])->first();
         return response()
             ->json([
                 'error' => false,
@@ -91,7 +109,7 @@ class DoctorAvailabilityController extends Controller
     }
     public function available($id)
     {
-        $schedule= Schedule::where('id',$id)->with(['doctor.education','doctor.expereince','doctor.doctorSpecialities.specialization','available'])->first();
+        $schedule = Schedule::where('id', $id)->with(['doctor.education', 'doctor.expereince', 'doctor.doctorSpecialities.specialization', 'available'])->first();
         return response()
             ->json([
                 'error' => false,
@@ -113,9 +131,9 @@ class DoctorAvailabilityController extends Controller
     public function update(Request $request, $id)
     {
         //
-        $doctor = DoctorAvailability::where('id',$id)->update($request->all());
+        $doctor = DoctorAvailability::where('id', $id)->update($request->all());
 
-        return response()->json(['data'=>$doctor,'doctor'=>$id]);
+        return response()->json(['data' => $doctor, 'doctor' => $id]);
     }
 
     /**

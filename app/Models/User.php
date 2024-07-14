@@ -43,7 +43,8 @@ class User extends Authenticatable implements LaratrustUser
         'lat',
         'long',
         'avatar',
-        'gender'
+        'gender',
+        'status'
 
     ];
 
@@ -65,6 +66,7 @@ class User extends Authenticatable implements LaratrustUser
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'status' => 'boolean',
     ];
     protected $appends = ['average_rating', 'reviews_count'];
     public function updateStatus($status)
@@ -112,6 +114,15 @@ class User extends Authenticatable implements LaratrustUser
         if (!$value) {
             return null;
         }
+        if ($value =='test.png' && $this->gender == 'female') {
+            return config('app.url').'/assets/images/woman.jpeg';
+           
+        }
+        if ($value =='test.png' && $this->gender == 'male') {
+            return config('app.url').'/assets/images/man.jpeg';
+           
+        }
+        // dd($value);
         return config('app.url').Storage::url($value);
     }
 

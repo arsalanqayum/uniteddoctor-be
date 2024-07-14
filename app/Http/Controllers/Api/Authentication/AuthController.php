@@ -12,19 +12,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-Use Carbon\Carbon;
+use Carbon\Carbon;
 use Hash;
+
 class AuthController extends Controller
 {
-    public function verify(Request $request){
-        $verify=User::where('email',$request->email)->update(['email_verified_at'=>Carbon::now()]);
-        return response()->json(['message'=>'Email verifed Now you can Start using System']);
+    public function verify(Request $request)
+    {
+        $verify = User::where('email', $request->email)->update(['email_verified_at' => Carbon::now()]);
+        return response()->json(['message' => 'Email verifed Now you can Start using System']);
     }
     public function profile(ProfileRequest $request)
     {
-       
-        if($request->file('avatar')){
-        $this->upload($request->file('avatar'), $request->id);
+
+        if ($request->file('avatar')) {
+            $this->upload($request->file('avatar'), $request->id);
         }
         $user = User::find($request->id);
         $user->first_name = $request->first_name;
@@ -35,7 +37,7 @@ class AuthController extends Controller
         $user->gender = $request->gender;
         $user->email = $request->email;
         $user->save();
-        return response()->json(['error'=>false,'message'=>'User List','data'=>$user]);
+        return response()->json(['error' => false, 'message' => 'User List', 'data' => $user]);
     }
     public function upload($file, $id)
     {
@@ -87,12 +89,40 @@ class AuthController extends Controller
     /** User Login return outh2 token with user detail */
     public function login(Request $request)
     {
+        if(User::where('email',$request->email)->where('user_type','doctor')->where('status',0)->first()){
+            return response()->json(['error'=>true,'message'=>'Account is not approved Yet by administration'],400);
+        }
         // return response()->json(['data'=>"ues"]);
         $credentials = $request->only('password');
 
         // Check if the provided value is an email or a username
         $field = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-// dd($request->only('password'));
+        // dd($request->only('password'));
+        $credentials[$field] = $request->email;
+        $credentials['status'] = 1;
+        if (Auth::attempt($credentials)) {
+
+            $user = Auth::user();
+
+
+            // dd($checkRole, 'in');
+
+            $token = $user->createToken('authToken')->accessToken;
+            // $userResource = new UserResource($user);
+            return response()->json(['result' => true, 'message' => 'Login successfully.', 'data' => $user, 'token' => $token], 200);
+        } else {
+            return response()->json(['result' => false, 'message' => 'Unauthorized', 'data' => ''], 401);
+        }
+    }
+
+    public function adminLogin(Request $request)
+    {
+        // return response()->json(['data'=>"ues"]);
+        $credentials = $request->only('password');
+
+        // Check if the provided value is an email or a username
+        $field = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        // dd($request->only('password'));
         $credentials[$field] = $request->email;
 
         if (Auth::attempt($credentials)) {
@@ -114,8 +144,7 @@ class AuthController extends Controller
     {
         // dd('in', $request->validated());
 
-
-        $user = User::create([
+        $data = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
@@ -126,9 +155,12 @@ class AuthController extends Controller
             'gender' => $request->gender,
             'lat' => $request->lat,
             'long' => $request->long,
-
-
-        ]);
+        ];
+        if ($request->user_type == 'doctor') {
+            $data['status'] = false;
+        }
+    //  dd($data);
+        $user = User::create($data);
         $user->sendEmailVerificationNotification();
         DB::commit();
         $token = $user->createToken('authToken')->accessToken;
