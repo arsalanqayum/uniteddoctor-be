@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Temporarily allow NULL values in location_id
-        Schema::table('doctor_availabilities', function (Blueprint $table) {
-            $table->unsignedBigInteger('location_id')->nullable()->change();
-        });
+        // Use raw SQL to update empty string values to NULL
+        DB::statement("UPDATE doctor_availabilities SET location_id = NULL WHERE location_id = ''");
 
-        // Update empty string values to NULL
-        DB::table('doctor_availabilities')->where('location_id', '')->update(['location_id' => null]);
-
-        // Proceed with the rest of the changes
         Schema::table('doctor_availabilities', function (Blueprint $table) {
             $table->unsignedBigInteger('location_id')->nullable()->change();
             $table->string('location')->nullable()->change();
