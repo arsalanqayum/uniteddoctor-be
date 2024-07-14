@@ -11,11 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::table('doctor_availabilities', function (Blueprint $table) {
+            // Temporarily drop the foreign key constraint if exists
+            $table->dropForeign(['location_id']); // Adjust the name if different
+
+            // Allow NULL values for location_id temporarily
+            $table->unsignedBigInteger('location_id')->nullable()->change();
+        });
+
         // Use raw SQL to update empty string values to NULL
         DB::statement("UPDATE doctor_availabilities SET location_id = NULL WHERE location_id = ''");
 
         Schema::table('doctor_availabilities', function (Blueprint $table) {
-            $table->unsignedBigInteger('location_id')->nullable()->change();
+            // Continue with the other changes
             $table->string('location')->nullable()->change();
             $table->string('location_address')->nullable()->change();
             $table->decimal('latitude', 10, 8)->nullable()->change();
