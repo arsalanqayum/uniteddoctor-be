@@ -99,7 +99,7 @@ class AuthController extends Controller
         $field = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         // dd($request->only('password'));
         $credentials[$field] = $request->email;
-        $credentials['status'] = 1;
+        // $credentials['status'] = 1;
         if (Auth::attempt($credentials)) {
 
             $user = Auth::user();
