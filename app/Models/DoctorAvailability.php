@@ -14,9 +14,10 @@ class DoctorAvailability extends Model
         'doctor_id', 'date', 'duration', 'start_time', 'end_time', 'is_repeated', 'type', 'location', 'schedule_id', 'location_id',
         'location_address',
         'latitude',
-        'longitude'
+        'longitude',
+        'day',
+        'validUntil'
     ];
-
     public function getTimeslotsAttribute()
     {
         $timeslots = [];

@@ -77,7 +77,7 @@ Route::get('/google/callback', [GoogleOAuthController::class, 'callback']);
     Route::prefix('doctor')->group(function (){
         Route::middleware('auth:api')->group(function () {
             Route::resource('speciliality', DoctorSpecialityController::class); 
-            Route::resource('availibility', DoctorAvailabilityController::class); 
+            Route::resource('availability', DoctorAvailabilityController::class); 
         });
     });
 
