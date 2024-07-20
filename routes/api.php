@@ -19,6 +19,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\GooglePlacesController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\VideoCallController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +35,8 @@ use App\Http\Controllers\ReviewController;
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+Route::post('video-call', [VideoCallController::class, 'createMeeting']);
+Route::get('zoho-callback', [AuthController::class, 'handleZohoCallback']);
 Route::prefix('v1')->group(function (){
     Route::get('search-places', [GooglePlacesController::class, 'searchPlaces']);
     Route::prefix('admin')->group(function (){
@@ -48,6 +52,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/verify', [AuthController::class, 'verify']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::get('zoho-oauth', [AuthController::class, 'redirectToZoho']);
+   
+    
     Route::get('doctor-search',[DoctorSearchController::class,'index']);
     Route::resource('specialization', SpecializationController::class); 
     Route::get('/google/oauth', [GoogleOAuthController::class, 'redirect']);

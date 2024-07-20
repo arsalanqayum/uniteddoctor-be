@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\GoogleCalendarService;
+use App\Services\ZohoService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\DB;
@@ -22,10 +23,10 @@ use Illuminate\Support\Str;
 
 class AppointmentController extends Controller
 {
-    protected $calendarService;
-    public function __construct(GoogleCalendarService $calendarService)
+    protected $zohoService;
+    public function __construct(ZohoService $zohoService)
     {
-        $this->calendarService = $calendarService;
+        $this->zohoService = $zohoService;
     }
     public function appointmentStat()
     {
@@ -161,7 +162,18 @@ class AppointmentController extends Controller
                 // dd($meetingDetails,$event);
                 $addAptLink = Appointment::where('id',$apt->id)->first();
                 // Optionally save the Google Meet link to the appointment record
-                $addAptLink->google_meet_link = $this->createRoom() ?? 'Link not available';
+                $params = [
+                    'title' => 'Your Meeting Title',
+                    'description' => 'Your Meeting Description',
+                    'start_time' => now()->addMinutes(5)->toIso8601String(),
+                    'end_time' => now()->addHour()->toIso8601String(),
+                    'participants' => [
+                        [
+                            'email' => 'participant@example.com'
+                        ]
+                    ]
+                ];
+                $addAptLink->google_meet_link = $this->zohoService->createZohoMeeting($params) ?? 'Link not available';
                 // dd($apt->google_meet_link );
                 $addAptLink->save();
             } catch (\Exception $e) {

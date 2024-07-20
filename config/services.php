@@ -59,9 +59,9 @@ return [
         'urlResourceOwnerDetails' => 'https://api.xero.com/api.xro/2.0/Organisation'
     ],
     'zoho' => [
-        'clientId'                => env('ZOHO_CLIENT_ID','1000.5B3K14KQLXO960EAVAWIIW7Y57KE9H'),
+        'client_id'                => env('ZOHO_CLIENT_ID','1000.5B3K14KQLXO960EAVAWIIW7Y57KE9H'),
         'clientSecret'            => env('ZOHO_CLIENT_SECRET','f6c4f9ec06281311d80d25ade5828a2b1ad4ada3f7'),
-        'redirectUri'             => env('ZOHO_REDIRECT_URL','http://axiomeds.test/api/setting/zohoCallback'),
+        'redirect_uri'             => env('ZOHO_REDIRECT_URL','http://axiomeds.test/api/setting/zohoCallback'),
     ]
 
 ];
